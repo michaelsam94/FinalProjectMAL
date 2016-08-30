@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <ImageView
+        android:layout_width="300px"
+        android:layout_height="450px"
+        android:id="@+id/poster"
+        android:scaleType="center"
+        android:layout_gravity="center"/>
+    <TextView
+        android:layout_width="300px"
+        android:layout_height="wrap_content"
+        android:id="@+id/movieTitle"
+        android:textColor="#cfd8dc"
+        android:textAlignment="center"
+        android:background="#96616161"
+        android:layout_gravity="center|bottom"/>
+
+
+</FrameLayout>

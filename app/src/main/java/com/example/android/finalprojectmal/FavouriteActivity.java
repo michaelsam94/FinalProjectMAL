@@ -49,8 +49,8 @@ public class FavouriteActivity extends AppCompatActivity {
                     manager.beginTransaction().replace(R.id.detailMovieFragment, movieDetailsFragment).commit();
                 } else {
                     Intent i = new Intent(FavouriteActivity.this, MovieDetailsActivity.class);
-                    i.putExtra("movie", movie.toBundle());
-                    i.putExtra("postion", position);
+                    i.putExtra(getString(R.string.movieKey), movie.toBundle());
+                    i.putExtra(getString(R.string.itemPositionKey), position);
                     startActivity(i);
                 }
             }

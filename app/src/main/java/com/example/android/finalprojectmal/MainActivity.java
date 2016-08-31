@@ -28,24 +28,14 @@ public class MainActivity extends AppCompatActivity {
     int selected;
     //   int page;
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("sortType", sortType);
-        outState.putInt("selected", selected);
 
-    }
 
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         gridView = (GridView) findViewById(R.id.gridview);
-
-/*        selected = savedInstanceState.getInt("selected");
-        sortType = (String) savedInstanceState.get("sortType");
-        gridView.setSelection(selected);*/
 
         sortType = getSortType();
         ArrayList<Movie> movies = null;
@@ -74,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
                         manager.beginTransaction().replace(R.id.detailMovieFragment, movieDetailsFragment).commit();
                     } else {
                         Intent i = new Intent(MainActivity.this, MovieDetailsActivity.class);
-                        i.putExtra("movie", movie.toBundle());
-                        i.putExtra("postion", position);
+                        i.putExtra(getString(R.string.movieKey), movie.toBundle());
+                        i.putExtra(getString(R.string.itemPositionKey), position);
                         startActivity(i);
                     }
                 }
@@ -83,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             });
         } else {
             Toast toast = new Toast(this);
-            toast.makeText(this,"There is no internet to load movies",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.noConnectivityToast,Toast.LENGTH_SHORT).show();
         }
 
 
@@ -130,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
     private String getSortType() {
         String sortType;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        sortType = prefs.getString("sortprefs", "top_rated");
+        sortType = prefs.getString("sortprefs", getString(R.string.topRatedValue));
         return sortType;
     }
 
@@ -139,6 +129,53 @@ public class MainActivity extends AppCompatActivity {
                 (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return netInfo != null && netInfo.isConnectedOrConnecting();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setContentView(R.layout.activity_main);
+        gridView = (GridView) findViewById(R.id.gridview);
+
+        sortType = getSortType();
+        ArrayList<Movie> movies = null;
+        if(isOnline()){
+            try {
+                movies = new FetchMoviesTask(1, sortType).execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            MovieAdapter movieAdapter = new MovieAdapter(this, movies);
+            gridView.setAdapter(movieAdapter);
+
+
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    FrameLayout detailFragment = (FrameLayout) findViewById(R.id.detailMovieFragment);
+                    Movie movie = (Movie) parent.getItemAtPosition(position);
+                    selected = position;
+                    if (detailFragment != null) {
+                        MovieDetailsFragment movieDetailsFragment = new MovieDetailsFragment();
+                        movieDetailsFragment.setArguments(movie.toBundle());
+                        FragmentManager manager = getFragmentManager();
+                        manager.beginTransaction().replace(R.id.detailMovieFragment, movieDetailsFragment).commit();
+                    } else {
+                        Intent i = new Intent(MainActivity.this, MovieDetailsActivity.class);
+                        i.putExtra(getString(R.string.movieKey), movie.toBundle());
+                        i.putExtra(getString(R.string.itemPositionKey), position);
+                        startActivity(i);
+                    }
+                }
+
+            });
+        } else {
+            Toast toast = new Toast(this);
+            Toast.makeText(this, R.string.noConnectivityToast,Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 }

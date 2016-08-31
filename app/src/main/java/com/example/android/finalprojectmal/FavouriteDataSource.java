@@ -18,23 +18,23 @@ public class FavouriteDataSource {
     private SQLiteDatabase database;
     private FavouriteOpenHelper openHelper;
     private String[] moviesColumns = {
-            openHelper.MOVIE_ID_COLUMN,
-            openHelper.MOVIE_POSTER_IMAGE_COLUMN,
-            openHelper.MOVIE_DESCRIPTION_COLUMN,
-            openHelper.MOVIE_RATE_COLUMN,
-            openHelper.MOVIE_RELEASE_DATE_COLUMN,
-            openHelper.MOVIE_TITLE_COLUMN,
+            FavouriteOpenHelper.MOVIE_ID_COLUMN,
+            FavouriteOpenHelper.MOVIE_POSTER_IMAGE_COLUMN,
+            FavouriteOpenHelper.MOVIE_DESCRIPTION_COLUMN,
+            FavouriteOpenHelper.MOVIE_RATE_COLUMN,
+            FavouriteOpenHelper.MOVIE_RELEASE_DATE_COLUMN,
+            FavouriteOpenHelper.MOVIE_TITLE_COLUMN,
     };
 
     private String[] trailersColumns = {
-            openHelper.TRAILER_MOVIE_ID_COLUMN,
-            openHelper.TRAILER_YOUTUBE_LINK_COLUMN,
+            FavouriteOpenHelper.TRAILER_MOVIE_ID_COLUMN,
+            FavouriteOpenHelper.TRAILER_YOUTUBE_LINK_COLUMN,
     };
 
     private String[] reviewsColumns = {
-            openHelper.REVIEW_MOVIE_ID_COLUMN,
-            openHelper.REVIEW_AUTHOR_COLUMN,
-            openHelper.REVIEW_CONTENT_COLUMN,
+            FavouriteOpenHelper.REVIEW_MOVIE_ID_COLUMN,
+            FavouriteOpenHelper.REVIEW_AUTHOR_COLUMN,
+            FavouriteOpenHelper.REVIEW_CONTENT_COLUMN,
     };
 
     public FavouriteDataSource(Context context) {
@@ -53,36 +53,40 @@ public class FavouriteDataSource {
     public int createMovie(Movie movie,Bitmap poster) throws SQLException {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         poster.compress(Bitmap.CompressFormat.PNG, 100, bos);
-        byte[] posterArray = bos.toByteArray();
         ContentValues values = new ContentValues();
+
         int sumOfRecords = 0;
-        values.put(openHelper.MOVIE_ID_COLUMN, movie.getId());
-        values.put(openHelper.MOVIE_POSTER_IMAGE_COLUMN, movie.getPosterURL());
-        values.put(openHelper.MOVIE_DESCRIPTION_COLUMN, movie.getDescription());
-        values.put(openHelper.MOVIE_RATE_COLUMN, movie.getRate());
-        values.put(openHelper.MOVIE_RELEASE_DATE_COLUMN, movie.getRelaseDate());
-        values.put(openHelper.MOVIE_TITLE_COLUMN, movie.getTitle());
-        long insertId = database.insert(openHelper.DB_TABLE_MOVIES, null, values);
+        values.put(FavouriteOpenHelper.MOVIE_ID_COLUMN, movie.getId());
+        values.put(FavouriteOpenHelper.MOVIE_POSTER_IMAGE_COLUMN, movie.getPosterURL());
+        values.put(FavouriteOpenHelper.MOVIE_DESCRIPTION_COLUMN, movie.getDescription());
+        values.put(FavouriteOpenHelper.MOVIE_RATE_COLUMN, movie.getRate());
+        values.put(FavouriteOpenHelper.MOVIE_RELEASE_DATE_COLUMN, movie.getRelaseDate());
+        values.put(FavouriteOpenHelper.MOVIE_TITLE_COLUMN, movie.getTitle());
+        long insertId = database.insert(FavouriteOpenHelper.DB_TABLE_MOVIES, null, values);
+
         if(insertId == -1){
             return -1;
         }
         sumOfRecords++;
         values.clear();
+
         for(int i=0;i<movie.getYoutubeURLs().size();i++){
-            values.put(openHelper.TRAILER_MOVIE_ID_COLUMN, movie.getId());
-            values.put(openHelper.TRAILER_YOUTUBE_LINK_COLUMN,movie.getYoutubeURLs().get(i));
-            insertId = database.insert(openHelper.DB_TABLE_TRAILERS, null, values);
+            values.put(FavouriteOpenHelper.TRAILER_MOVIE_ID_COLUMN, movie.getId());
+            values.put(FavouriteOpenHelper.TRAILER_YOUTUBE_LINK_COLUMN,movie.getYoutubeURLs().get(i));
+            insertId = database.insert(FavouriteOpenHelper.DB_TABLE_TRAILERS, null, values);
             if(insertId==-1){
                 return -1;
             }
             sumOfRecords++;
         }
+
         values.clear();
+
         for(int i=0;i<movie.getReviewsAutors().size();i++){
-            values.put(openHelper.REVIEW_MOVIE_ID_COLUMN, movie.getId());
-            values.put(openHelper.REVIEW_AUTHOR_COLUMN,movie.getReviewsAutors().get(i));
-            values.put(openHelper.REVIEW_CONTENT_COLUMN,movie.getReviewsContents().get(i));
-            insertId = database.insert(openHelper.DB_TABLE_REVIEWS, null, values);
+            values.put(FavouriteOpenHelper.REVIEW_MOVIE_ID_COLUMN, movie.getId());
+            values.put(FavouriteOpenHelper.REVIEW_AUTHOR_COLUMN,movie.getReviewsAutors().get(i));
+            values.put(FavouriteOpenHelper.REVIEW_CONTENT_COLUMN,movie.getReviewsContents().get(i));
+            insertId = database.insert(FavouriteOpenHelper.DB_TABLE_REVIEWS, null, values);
             if(insertId==-1){
                 return -1;
             }
@@ -94,7 +98,7 @@ public class FavouriteDataSource {
     public ArrayList<Movie> getAllMovies(){
         ArrayList<Movie> favouritMovies = new ArrayList<>();
 
-        Cursor cursor = database.query(openHelper.DB_TABLE_MOVIES,moviesColumns,
+        Cursor cursor = database.query(FavouriteOpenHelper.DB_TABLE_MOVIES,moviesColumns,
                 null,null,null,null,null);
         cursor.moveToFirst();
         for (int i=0;i<cursor.getCount();i++){
@@ -105,16 +109,16 @@ public class FavouriteDataSource {
         }
 
         for (int i=0;i<favouritMovies.size();i++){
-            String whereClause = openHelper.TRAILER_MOVIE_ID_COLUMN + " = " + favouritMovies.get(i).getId();
-            cursor = database.query(openHelper.DB_TABLE_TRAILERS,trailersColumns,
+            String whereClause = FavouriteOpenHelper.TRAILER_MOVIE_ID_COLUMN + " = " + favouritMovies.get(i).getId();
+            cursor = database.query(FavouriteOpenHelper.DB_TABLE_TRAILERS,trailersColumns,
                     whereClause, null, null,null,null);
             cursor.moveToFirst();
             favouritMovies.get(i).trailersCursorToMovie(cursor,favouritMovies.get(i));
         }
 
         for (int i=0;i<favouritMovies.size();i++){
-            String whereClause = openHelper.REVIEW_MOVIE_ID_COLUMN + " = " + favouritMovies.get(i).getId();
-            cursor = database.query(openHelper.DB_TABLE_REVIEWS,reviewsColumns,
+            String whereClause = FavouriteOpenHelper.REVIEW_MOVIE_ID_COLUMN + " = " + favouritMovies.get(i).getId();
+            cursor = database.query(FavouriteOpenHelper.DB_TABLE_REVIEWS,reviewsColumns,
                     whereClause, null, null,null,null);
             cursor.moveToFirst();
             favouritMovies.get(i).reviewsCursorToMovie(cursor,favouritMovies.get(i));
@@ -126,16 +130,4 @@ public class FavouriteDataSource {
 
 
 
-    public void deleteMovie(String movieId) {
-        String id = movieId;
-        database.delete(openHelper.DB_TABLE_MOVIES, openHelper.MOVIE_ID_COLUMN
-                + " = " + id, null);
-
-        database.delete(openHelper.DB_TABLE_TRAILERS, openHelper.TRAILER_MOVIE_ID_COLUMN
-                + " = " + id, null);
-
-        database.delete(openHelper.DB_TABLE_REVIEWS, openHelper.REVIEW_MOVIE_ID_COLUMN
-                + " = " + id, null);
-        return;
-    }
 }

@@ -1,6 +1,5 @@
 package com.example.android.finalprojectmal;
 
-import android.util.Log;
 import android.widget.AbsListView;
 
 import java.util.concurrent.ExecutionException;
@@ -53,7 +52,6 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
         if (loading && (totalItemCount > previousTotalItemCount)) {
             loading = false;
             previousTotalItemCount = totalItemCount;
-            Log.d("sam", "onScroll: ");
             currentPage++;
         }
 
@@ -68,7 +66,6 @@ public abstract class EndlessScrollListener implements AbsListView.OnScrollListe
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Log.d("mic", "onScroll: ");
         }
     }
 

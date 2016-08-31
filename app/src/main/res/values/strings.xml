@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">FinalProjectMAL</string>
+    <string name="sortType">sortType</string>
+    <string name="movieKey">movie</string>
+    <string name="itemPositionKey">position</string>
+    <string name="noConnectivityToast">There is no internet to load movies</string>
+    <string name="topRatedValue">top_rated</string>
+    <string name="movieInFavouriteToast">The movie already in favourites</string>
+    <string name="movieNotInFavourite">The movie added to favourites</string>
+    <string name="trailerValueTV">"Trailer "</string>
 
 </resources>

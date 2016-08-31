@@ -91,7 +91,6 @@ public class JsonHandler {
         baseURl += "=";
         baseURl += page;
 
-        Log.d("url",baseURl.toString());
 
 
         try {
@@ -135,14 +134,12 @@ public class JsonHandler {
     }
 
     public Movie setTrailerURLToMovie(Movie movie) {
-        final String BASE_URL = "http://api.themoviedb.org/3/movie";
         final String YOUTUBE_PARAM_KEY = "v";
         final String BASE_YOUTUBE_URL = "https://www.youtube.com/watch?";
 
         JSONObject element;
         JSONArray jsonArray;
         JSONObject object = getJsonResult(movie.getTrailerURL());
-        ;
         if (object != null) {
             try {
                 jsonArray = object.getJSONArray("results");

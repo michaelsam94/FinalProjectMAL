@@ -23,7 +23,7 @@ public class MovieDetailsActivity extends AppCompatActivity{
 
 
         Intent intent = getIntent();
-        Bundle extras = intent.getBundleExtra("movie");
+        Bundle extras = intent.getBundleExtra(getString(R.string.movieKey));
 
         movie = new Movie(extras);
         if(savedInstanceState == null) {

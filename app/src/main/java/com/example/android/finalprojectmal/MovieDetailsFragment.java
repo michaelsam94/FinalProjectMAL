@@ -53,8 +53,7 @@ public class MovieDetailsFragment extends Fragment {
         favouriteDataSource = new FavouriteDataSource(getActivity());
         favouriteDataSource.open();
 
-        int postion = getActivity().getIntent().getIntExtra("postion", 0);
-        Log.d("postion", "" + postion);
+        
 
         if (b != null && b.containsKey(Movie.MOVIE_ID)) {
             movie = new Movie(b);
@@ -115,13 +114,12 @@ public class MovieDetailsFragment extends Fragment {
                 }
                 movie.setPosterURL(path);
                 sumOfRecords = favouriteDataSource.createMovie(movie, image);
-                Log.d("sumOfRecord", "" + sumOfRecords);
                 Toast toast = new Toast(getActivity());
                 if (sumOfRecords == -1) {
-                    toast.makeText(getActivity(), "The movie already in favourites", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), R.string.movieInFavouriteToast, Toast.LENGTH_SHORT)
                             .show();
                 } else {
-                    toast.makeText(getActivity(), "The movie added to favourites", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), R.string.movieNotInFavourite, Toast.LENGTH_SHORT)
                             .show();
                 }
             }
@@ -160,7 +158,6 @@ public class MovieDetailsFragment extends Fragment {
                 TextView trailerTV = new TextView(getActivity());
                 ImageView trailerIV = new ImageView(getActivity());
 
-
                 trailerIV.setImageResource(R.drawable.play);
                 trailerIV.setId(i + 10);
                 trailerTV.setId(i + 30);
@@ -186,7 +183,7 @@ public class MovieDetailsFragment extends Fragment {
                 trailerIV.setLayoutParams(llparms);
                 v.addView(trailerIV);
 
-                trailerTV.setText("Trailer " + (i + 1) + "     ");
+                trailerTV.setText(mContext.getString(R.string.trailerValueTV) + (i + 1) + "     ");
                 trailerTV.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 
                 llparms = new RelativeLayout.LayoutParams(
